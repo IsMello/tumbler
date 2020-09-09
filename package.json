@@ -4,14 +4,17 @@
   "description": "tumblr clone",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "standard"
   },
   "author": "thais m.d.",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "ejs": "^3.1.5",
     "express": "^4.17.1",
-    "mongoose": "^5.10.3"
+    "mongoose": "^5.10.3",
+    "nodemon": "^2.0.4"
   },
   "devDependencies": {
     "standard": "^14.3.4"
