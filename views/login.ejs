@@ -1,13 +1,19 @@
-<html>
-    <head>
-        <title>Login</title>
+<%- include('includes/navigation.ejs') %>
     </head>
     <body>
         <form>
+            <div class="form-control">
             <label>Email</label>
             <input type="email">
-            <label>Senha</label>
+        </div>
+            <div class="form-control">
+            <label>Password</label>
             <input type="password">
+        </div>
+        <div class="btn-div">
+            <button class="btn blue" type="submit">Sign In</button>
+            <button class="btn" id="cancel">Cancel</button>
+        </div>
         </form>
     </body>
 </html>

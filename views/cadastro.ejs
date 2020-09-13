@@ -1,22 +1,27 @@
-<html>
-    <head>
-        <title>Cadastro</title>
-        <link rel="stylesheet" href="css/form.css">
+<%- include('includes/navigation.ejs') %>
     </head>
     <body>
-        <form class="formulario">
-            <label>Email</label>
-            <input type="email">
-            <label>Senha</label>
-            <input type="password">
-            <label>Confirmar Senha</label>
-            <input type="password">
-            <label>Confirmar senha</label>
-            <input type="password">
-            <label>Nome do seu Tumbler</label>
-            <input type="text">
-            <button class="btn" type="submit">Cadastrar</button>
-            <button class="btn cancelar">Cancelar</button>
+        <form method="POST" action="/cadastro">
+            <div class="form-control">
+                <label>Email</label>
+                <input type="email" name="email">
+            </div>
+            <div class="form-control">
+                <label>Senha</label>
+                <input type="password" name="password">
+            </div>
+            <div class="form-control">
+                <label>Confirmação de senha</label>
+                <input type="password" name="confirmPassword">
+            </div>
+            <div class="form-control">
+                <label>Nome do perfil</label>
+                <input type="text" name="name">
+            </div>
+            <div class="btn-div">
+                <button class="btn blue" type="submit">Cadastrar</button>
+                <button class="btn">Cancelar</button>
+            </div>
         </form>
     </body>
 </html>
