@@ -6,14 +6,10 @@ router.get('/', (req, res, next) => {
   res.render('../views/index')
 })
 
-router.get('/cadastro', (req, res, next) => {
-  res.render('../views/cadastro')
-})
+router.get('/cadastro', userController.getCadastro)
 
-router.get('/login', (req, res, next) => {
-  res.render('../views/login')
-})
+router.post('/cadastro', userController.postCadastro)
 
-router.post('/cadatro', userController.postCadastro)
+router.get('/login', userController.getLogin)
 
 module.exports = router
