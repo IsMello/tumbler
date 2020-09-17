@@ -60,3 +60,10 @@ a:visited {
 a:active {
  color: #3535d8d5;
 }
+
+/* .error {
+    padding: 50px;
+    background-color: rgb(219, 96, 96);
+    width: 50px;
+    text-align: center;
+} */

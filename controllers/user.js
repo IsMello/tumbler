@@ -1,41 +1,56 @@
 const User = require('../models/user')
 const Perfil = require('../models/perfil')
 const bcrypt = require('bcryptjs')
+const { validationResult } = require('express-validator/check')
 
 exports.getCadastro = (req, res, next) => {
-  res.render('../views/cadastro')
+  res.render('../views/cadastro', { errorMessage: null })
 }
 
 exports.postCadastro = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
   const nome = req.body.name
-
+  const errors = validationResult(req)
   const perfil = new Perfil({
     nome: nome
   })
-  return perfil
-    .save()
-    .then(result => {
-      User.findOne({ email: email })
-        .then(user => {
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .render('../views/cadastro', { errorMessage: errors.array()[0].msg })
+  }
+
+  return Perfil.findOne({ nome: nome })
+    .then(docPerfil => {
+      if (docPerfil) {
+        req.flash('error', 'Nome já em uso')
+        return res.redirect('login')
+      } else {
+        return User.findOne({ email: email }).then(user => {
           if (user) {
-            // req.flash('error', 'Email already in use!')
+            req.flash('error', 'Este email já está em uso!')
             return res.redirect('login')
           }
-          bcrypt
-            .hash(password, 12)
-            .then(hashedPassword => {
-              const newUser = new User({
-                email: email,
-                senha: hashedPassword,
-                perfilPrincipal: result._id
-              })
-              newUser
-                .save()
-                .then(result => {
-                  console.log('perfil salvo com sucesso!')
-                  res.redirect('/login')
+          return perfil
+            .save()
+            .then(result => {
+              bcrypt
+                .hash(password, 12)
+                .then(hashedPassword => {
+                  const newUser = new User({
+                    email: email,
+                    senha: hashedPassword,
+                    perfilPrincipal: result._id
+                  })
+                  return newUser
+                    .save()
+                    .then(result => {
+                      res.redirect('/login')
+                    })
+                    .catch(err => {
+                      console.log(err)
+                    })
                 })
                 .catch(err => {
                   console.log(err)
@@ -45,9 +60,7 @@ exports.postCadastro = (req, res, next) => {
               console.log(err)
             })
         })
-        .catch(err => {
-          console.log(err)
-        })
+      }
     })
     .catch(err => {
       console.log(err)
@@ -56,6 +69,6 @@ exports.postCadastro = (req, res, next) => {
 
 exports.getLogin = (req, res, next) => {
   res.render('../views/login', {
-    // errorMessage: req.flash('error')
+    errorMessage: req.flash('error')
   })
 }

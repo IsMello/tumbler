@@ -1,10 +1,13 @@
 <%- include('includes/navigation.ejs') %>
     </head>
     <body>
+        <% if(errorMessage) {%>
+            <div class="error"><%= errorMessage %></div>
+            <%}%>
         <form method="POST" action="/cadastro">
             <div class="form-control">
                 <label>Email</label>
-                <input type="email" name="email">
+                <input type="text" name="email">
             </div>
             <div class="form-control">
                 <label>Senha</label>

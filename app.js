@@ -4,15 +4,18 @@ const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 require('dotenv').config()
-// const flash = require('connect-flash')
+const session = require('express-session')
+const flash = require('connect-flash')
 
 app.set('view engine', 'ejs')
 app.set('views', 'views')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
-
-// app.use(flash())
+app.use(
+  session({ secret: 'new secret', resave: false, saveUninitialized: false })
+)
+app.use(flash())
 
 const userRoutes = require('./routes/user')
 

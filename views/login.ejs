@@ -1,6 +1,9 @@
 <%- include('includes/navigation.ejs') %>
     </head>
     <body>
+        <% if(errorMessage) {%>
+            <div class="error"><%= errorMessage %></div>
+            <%}%>
         <form>
             <div class="form-control">
             <label>Email</label>
