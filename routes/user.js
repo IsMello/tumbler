@@ -19,7 +19,15 @@ router.post(
     'A senha deve ter no mínimo 8 caracteres com letras e números, insira uma senha válida'
   )
     .isLength({ min: 8 })
-    .isAlphanumeric(),
+    .isAlphanumeric()
+    // .custom((value, { req }) => {
+    //   if (value !== req.body.password.match(new RegExp('/[^A-Za-z0-9]/g'))) {
+    //     throw new Error(
+    //       'A senha deve ter no mínimo 8 caracteres com letras e números, insira uma senha válida'
+    //     )
+    //   }
+    // })
+  ,
   check('confirmPassword').custom((value, { req }) => {
     if (value !== req.body.password) {
       throw new Error('Senhas devem ser iguais')

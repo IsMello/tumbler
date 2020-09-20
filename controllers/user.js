@@ -4,12 +4,13 @@ const bcrypt = require('bcryptjs')
 const { validationResult } = require('express-validator/check')
 
 exports.getCadastro = (req, res, next) => {
-  res.render('../views/cadastro', { errorMessage: null })
+  res.render('../views/cadastro', { errorMessage: null, oldInput: null })
 }
 
 exports.postCadastro = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
+  const confirmPassword = req.body.confirmPassword
   const nome = req.body.name
   const errors = validationResult(req)
   const perfil = new Perfil({
@@ -18,7 +19,10 @@ exports.postCadastro = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res
       .status(422)
-      .render('../views/cadastro', { errorMessage: errors.array()[0].msg })
+      .render('../views/cadastro', {
+        errorMessage: errors.array()[0].msg,
+        oldInput: { email: email, password: password, nome: nome, confirmPassword: confirmPassword }
+      })
   }
 
   return Perfil.findOne({ nome: nome })

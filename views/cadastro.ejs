@@ -7,19 +7,19 @@
         <form method="POST" action="/cadastro">
             <div class="form-control">
                 <label>Email</label>
-                <input type="text" name="email">
+                <input type="text" name="email" value=<%= oldInput ? oldInput.email : "" %>>
             </div>
             <div class="form-control">
                 <label>Senha</label>
-                <input type="password" name="password">
+                <input type="password" name="password" value=<%= oldInput ? oldInput.password : "" %>>
             </div>
             <div class="form-control">
                 <label>Confirmação de senha</label>
-                <input type="password" name="confirmPassword">
+                <input type="password" name="confirmPassword" value=<%= oldInput ? oldInput.confirmPassword : "" %>>
             </div>
             <div class="form-control">
                 <label>Nome do perfil</label>
-                <input type="text" name="name">
+                <input type="text" name="name" value=<%= oldInput ? oldInput.nome : "" %>>
             </div>
             <div class="btn-div">
                 <button class="btn blue" type="submit">Cadastrar</button>
