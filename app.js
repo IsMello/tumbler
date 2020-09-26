@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 const session = require('express-session')
 const flash = require('connect-flash')
+const expressLayout = require('express-ejs-layouts')
 
 app.set('view engine', 'ejs')
 app.set('views', 'views')
@@ -16,6 +17,8 @@ app.use(
   session({ secret: process.env.MY_SECRET, resave: false, saveUninitialized: false })
 )
 app.use(flash())
+
+app.use(expressLayout)
 
 const userRoutes = require('./routes/user')
 

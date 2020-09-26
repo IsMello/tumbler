@@ -1,30 +1,29 @@
-<%- include('includes/navigation.ejs') %>
-    </head>
-    <body>
-        <% if(errorMessage) {%>
-            <div class="error"><%= errorMessage %></div>
-            <%}%>
-        <form method="POST" action="/cadastro">
-            <div class="form-control">
-                <label>Email</label>
-                <input type="text" name="email" value=<%= oldInput ? oldInput.email : "" %>>
-            </div>
-            <div class="form-control">
-                <label>Senha</label>
-                <input type="password" name="password" value=<%= oldInput ? oldInput.password : "" %>>
-            </div>
-            <div class="form-control">
-                <label>Confirmação de senha</label>
-                <input type="password" name="confirmPassword" value=<%= oldInput ? oldInput.confirmPassword : "" %>>
-            </div>
-            <div class="form-control">
-                <label>Nome do perfil</label>
-                <input type="text" name="name" value=<%= oldInput ? oldInput.nome : "" %>>
-            </div>
-            <div class="btn-div">
-                <button class="btn blue" type="submit">Cadastrar</button>
-                <button class="btn" ><a href="/">Cancelar</a></button>
-            </div>
-        </form>
-    </body>
-</html>
+<%- contentFor('title') %>
+Cadastro
+
+<%- contentFor('body') %>
+<% if(errorMessage) {%>
+    <div class="error"><%= errorMessage %></div>
+<%}%>
+<form method="POST" action="/cadastro">
+    <div class="form-control">
+        <label>Email</label>
+        <input type="text" name="email" value=<%= oldInput ? oldInput.email : "" %>>
+    </div>
+    <div class="form-control">
+        <label>Senha</label>
+        <input type="password" name="password" value=<%= oldInput ? oldInput.password : "" %>>
+    </div>
+    <div class="form-control">
+        <label>Confirmação de senha</label>
+        <input type="password" name="confirmPassword" value=<%= oldInput ? oldInput.confirmPassword : "" %>>
+    </div>
+    <div class="form-control">
+        <label>Nome do perfil</label>
+        <input type="text" name="name" value=<%= oldInput ? oldInput.nome : "" %>>
+    </div>
+    <div class="btn-div">
+        <button class="btn blue" type="submit">Cadastrar</button>
+        <button class="btn" ><a href="/">Cancelar</a></button>
+    </div>
+</form>

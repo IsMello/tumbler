@@ -1,22 +1,21 @@
-<%- include('includes/navigation.ejs') %>
-    </head>
-    <body>
-        <% if(errorMessage) {%>
-            <div class="error"><%= errorMessage %></div>
-            <%}%>
-        <form>
-            <div class="form-control">
-            <label>Email</label>
-            <input type="email">
-        </div>
-            <div class="form-control">
-            <label>Password</label>
-            <input type="password">
-        </div>
-        <div class="btn-div">
-            <button class="btn blue" type="submit">Sign In</button>
-            <button class="btn" ><a href="/">Cancelar</a></button>
-        </div>
-        </form>
-    </body>
-</html>
+<%- contentFor('title') %>
+Login
+
+<%- contentFor('body') %>
+<% if(errorMessage) {%>
+    <div class="error"><%= errorMessage %></div>
+<%}%>
+<form>
+    <div class="form-control">
+    <label>Email</label>
+    <input type="email">
+</div>
+    <div class="form-control">
+    <label>Password</label>
+    <input type="password">
+</div>
+<div class="btn-div">
+    <button class="btn blue" type="submit">Sign In</button>
+    <button class="btn" ><a href="/">Cancelar</a></button>
+</div>
+</form>
