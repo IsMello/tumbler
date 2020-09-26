@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 const { validationResult } = require('express-validator/check')
 
 exports.getCadastro = (req, res, next) => {
-  res.render('../views/cadastro', { errorMessage: null, oldInput: null })
+  res.render('cadastro', { errorMessage: null, oldInput: null })
 }
 
 exports.postCadastro = (req, res, next) => {
@@ -17,24 +17,41 @@ exports.postCadastro = (req, res, next) => {
     nome: nome
   })
   if (!errors.isEmpty()) {
-    return res
-      .status(422)
-      .render('../views/cadastro', {
-        errorMessage: errors.array()[0].msg,
-        oldInput: { email: email, password: password, nome: nome, confirmPassword: confirmPassword }
-      })
+    return res.status(422).render('cadastro', {
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+        nome: nome,
+        confirmPassword: confirmPassword
+      }
+    })
   }
 
   return Perfil.findOne({ nome: nome })
     .then(docPerfil => {
       if (docPerfil) {
-        req.flash('error', 'Nome já em uso')
-        return res.redirect('login')
+        return res.status(422).render('cadastro', {
+          errorMessage: 'Nome já em uso',
+          oldInput: {
+            email: email,
+            password: password,
+            nome: nome,
+            confirmPassword: confirmPassword
+          }
+        })
       } else {
         return User.findOne({ email: email }).then(user => {
           if (user) {
-            req.flash('error', 'Este email já está em uso!')
-            return res.redirect('login')
+            return res.status(422).render('cadastro', {
+              errorMessage: 'Este email já está em uso!',
+              oldInput: {
+                email: email,
+                password: password,
+                nome: nome,
+                confirmPassword: confirmPassword
+              }
+            })
           }
           return perfil
             .save()
@@ -72,7 +89,7 @@ exports.postCadastro = (req, res, next) => {
 }
 
 exports.getLogin = (req, res, next) => {
-  res.render('../views/login', {
+  res.render('login', {
     errorMessage: req.flash('error')
   })
 }

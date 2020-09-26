@@ -13,7 +13,7 @@ app.set('views', 'views')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(
-  session({ secret: 'new secret', resave: false, saveUninitialized: false })
+  session({ secret: process.env.MY_SECRET, resave: false, saveUninitialized: false })
 )
 app.use(flash())
 

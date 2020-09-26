@@ -4,29 +4,21 @@ const userController = require('../controllers/user')
 const { check } = require('express-validator/check')
 
 router.get('/', (req, res, next) => {
-  res.render('../views/index')
+  res.render('index')
 })
 
 router.get('/cadastro', userController.getCadastro)
 
 router.post(
   '/cadastro',
-  check('email')
-    .isEmail()
-    .withMessage('Insira um email válido!'),
+  check('email', 'Insira um email válido!')
+    .isEmail(),
   check(
     'password',
     'A senha deve ter no mínimo 8 caracteres com letras e números, insira uma senha válida'
   )
     .isLength({ min: 8 })
     .isAlphanumeric()
-    // .custom((value, { req }) => {
-    //   if (value !== req.body.password.match(new RegExp('/[^A-Za-z0-9]/g'))) {
-    //     throw new Error(
-    //       'A senha deve ter no mínimo 8 caracteres com letras e números, insira uma senha válida'
-    //     )
-    //   }
-    // })
   ,
   check('confirmPassword').custom((value, { req }) => {
     if (value !== req.body.password) {
