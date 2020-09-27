@@ -6,13 +6,15 @@ const { validationResult } = require('express-validator/check')
 exports.getCadastro = (req, res, next) => {
   res.render('cadastro', { errorMessage: null, oldInput: null })
 }
-
 exports.postCadastro = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
   const confirmPassword = req.body.confirmPassword
   const nome = req.body.name
   const errors = validationResult(req)
+  let idPerfilPrincipal
+  let newUser
+
   const perfil = new Perfil({
     nome: nome
   })
@@ -56,35 +58,40 @@ exports.postCadastro = (req, res, next) => {
           return perfil
             .save()
             .then(result => {
-              bcrypt
-                .hash(password, 12)
-                .then(hashedPassword => {
-                  const newUser = new User({
-                    email: email,
-                    senha: hashedPassword,
-                    perfilPrincipal: result._id
-                  })
-                  return newUser
-                    .save()
-                    .then(result => {
-                      res.redirect('/login')
-                    })
-                    .catch(err => {
-                      console.log(err)
-                    })
-                })
-                .catch(err => {
-                  console.log(err)
-                })
+              idPerfilPrincipal = result._id
+              return idPerfilPrincipal
             })
-            .catch(err => {
-              console.log(err)
+            .then(result => {
+              return bcrypt.hash(password, 12)
+            })
+            .then(hashedPassword => {
+              newUser = new User({
+                email: email,
+                senha: hashedPassword,
+                perfilPrincipal: idPerfilPrincipal
+              })
+              return newUser
+            })
+            .then(newUser => {
+              return newUser.save()
+            })
+            .then(result => {
+              res.redirect('/login')
             })
         })
       }
     })
     .catch(err => {
       console.log(err)
+      return Perfil.findOne({ _id: idPerfilPrincipal })
+        .then(perfil => {
+          if (perfil) {
+            return Perfil.findByIdAndDelete({ _id: idPerfilPrincipal })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     })
 }
 

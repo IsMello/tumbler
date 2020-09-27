@@ -6,16 +6,14 @@ Login
     <div class="error"><%= errorMessage %></div>
 <%}%>
 <form>
-    <div class="form-control">
+    <div class="form-group">
     <label>Email</label>
-    <input type="email">
+    <input type="email" class="form-control">
 </div>
-    <div class="form-control">
+    <div class="form-group">
     <label>Password</label>
-    <input type="password">
+    <input type="password" class="form-control">
 </div>
-<div class="btn-div">
-    <button class="btn blue" type="submit">Sign In</button>
-    <button class="btn" ><a href="/">Cancelar</a></button>
-</div>
+    <button class="btn btn-dark" type="submit">Sign In</button>
+    <button class="btn btn-link"><a href="/">Cancelar</a></button>
 </form>
