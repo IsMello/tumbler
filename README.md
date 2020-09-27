@@ -1,6 +1,6 @@
 # TumblEr
 
-a [Tumblr](tumblr.com) clone app created for studying purposes.
+a [Tumblr](https://tumblr.com) clone app created for studying purposes.
 
 ### How to run
 
