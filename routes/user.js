@@ -11,6 +11,8 @@ router.get('/cadastro', userController.getCadastro)
 
 router.post(
   '/cadastro',
+  check('name').notEmpty().withMessage('Por favor preencha o Nome do seu perfil')
+  ,
   check('email', 'Insira um email válido!')
     .isEmail(),
   check(
