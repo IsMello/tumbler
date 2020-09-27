@@ -11,17 +11,20 @@ router.get('/cadastro', userController.getCadastro)
 
 router.post(
   '/cadastro',
-  check('name').notEmpty().withMessage('Por favor preencha o Nome do seu perfil')
-  ,
-  check('email', 'Insira um email válido!')
-    .isEmail(),
+  check('name')
+    .notEmpty()
+    .withMessage('Por favor preencha o Nome do seu perfil'),
+  check('email', 'Insira um email válido!').isEmail(),
   check(
     'password',
     'A senha deve ter no mínimo 8 caracteres com letras e números, insira uma senha válida'
   )
+    .not()
+    .isAlpha()
+    .not()
+    .isNumeric()
     .isLength({ min: 8 })
-    .isAlphanumeric()
-  ,
+    .isAlphanumeric(),
   check('confirmPassword').custom((value, { req }) => {
     if (value !== req.body.password) {
       throw new Error('Senhas devem ser iguais')
