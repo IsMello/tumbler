@@ -97,6 +97,46 @@ exports.postCadastro = (req, res, next) => {
 
 exports.getLogin = (req, res, next) => {
   res.render('login', {
-    errorMessage: req.flash('error')
+    errorMessage: req.flash('error'),
+    oldInput: null
   })
+}
+
+exports.postLogin = (req, res, next) => {
+  const email = req.body.email
+  const password = req.body.password
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('login', {
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password
+      }
+    })
+  }
+
+  return User.findOne({ email: email })
+    .then(user => {
+      if (!user) {
+        return res.render('login', {
+          errorMessage: 'Email ou senha inválida',
+          oldInput: { email: email, password: password }
+        })
+      }
+      return user
+    })
+    .then(user => {
+      return bcrypt.compare(password, user.senha)
+    })
+    .then(result => {
+      if (result === false) {
+        return res.render('login', {
+          errorMessage: 'Email ou senha inválida',
+          oldInput: { email: email, password: password }
+        })
+      }
+      res.redirect('/')
+    })
 }

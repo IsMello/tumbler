@@ -36,4 +36,15 @@ router.post(
 
 router.get('/login', userController.getLogin)
 
+router.post(
+  '/login',
+  check('email')
+    .isEmail()
+    .withMessage('Por favor insira um email válido'),
+  check('password')
+    .notEmpty()
+    .withMessage('Por favor insira a senha'),
+  userController.postLogin
+)
+
 module.exports = router
