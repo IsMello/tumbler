@@ -3,10 +3,6 @@ const router = express.Router()
 const userController = require('../controllers/user')
 const { check } = require('express-validator/check')
 
-router.get('/', (req, res, next) => {
-  res.render('index')
-})
-
 router.get('/cadastro', userController.getCadastro)
 
 router.post(

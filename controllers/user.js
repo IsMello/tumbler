@@ -96,9 +96,11 @@ exports.postCadastro = (req, res, next) => {
 }
 
 exports.getLogin = (req, res, next) => {
+  console.log(req.session.isLoggedIn)
   res.render('login', {
-    errorMessage: req.flash('error'),
-    oldInput: null
+    errorMessage: null,
+    oldInput: null,
+    isLoggedIn: req.session.isLoggedIn
   })
 }
 
@@ -106,6 +108,7 @@ exports.postLogin = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
   const errors = validationResult(req)
+  let perfil
 
   if (!errors.isEmpty()) {
     return res.status(422).render('login', {
@@ -125,6 +128,7 @@ exports.postLogin = (req, res, next) => {
           oldInput: { email: email, password: password }
         })
       }
+      perfil = user.perfilPrincipal
       return user
     })
     .then(user => {
@@ -137,6 +141,14 @@ exports.postLogin = (req, res, next) => {
           oldInput: { email: email, password: password }
         })
       }
-      res.redirect('/')
+      req.session.isLoggedIn = true
+    })
+    .then(result => {
+      return Perfil.findById({ _id: perfil })
+    })
+    .then(perfil => {
+      res.render('index', { isLoggedIn: req.session.isLoggedIn, perfil: perfil.nome })
+    }).catch(err => {
+      console.log(err)
     })
 }
