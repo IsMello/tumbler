@@ -1,0 +1,20 @@
+<%- contentFor('title') %>
+Login
+
+<%- contentFor('body') %>
+<% if (errorMessage) {%>
+    <div class="error"><%= errorMessage %></div>
+<%}%>
+
+<form method="POST" action="/login">
+    <div class="form-group">
+    <label>Email</label>
+    <input type="email" class="form-control" name="email" value=<%= oldInput ? oldInput.email : '' %>>
+</div>
+    <div class="form-group">
+    <label>Password</label>
+    <input type="password" class="form-control" name="password" value=<%= oldInput ? oldInput.password : '' %>>
+</div>
+    <button class="btn btn-dark" type="submit">Sign In</button>
+    <button class="btn btn-link"><a href="/">Cancelar</a></button>
+</form>

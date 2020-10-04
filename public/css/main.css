@@ -1,0 +1,11 @@
+body {
+    padding-top: 5em;
+}
+
+.nav-color {
+    background-color: rgb(75, 22, 126);
+}
+
+.error {
+    color: red;
+}

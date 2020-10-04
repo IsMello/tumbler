@@ -1,19 +1,27 @@
-<html>
-    <head>
-        <title>Cadastro</title>
-    </head>
-    <body>
-        <form>
-            <label>Email</label>
-            <input type="email">
-            <label>Senha</label>
-            <input type="password">
-            <label>Confirmar Senha</label>
-            <input type="password">
-            <label>Confirmar senha</label>
-            <input type="password">
-            <label>Nome do seu Tumbler</label>
-            <input type="text">
-        </form>
-    </body>
-</html>
+<%- contentFor('title') %>
+Cadastro
+
+<%- contentFor('body') %>
+<% if (errorMessage) {%>
+    <div class="error"><%= errorMessage %></div>
+<%}%>
+<form method="POST" action="/cadastro">
+    <div class="form-group">
+        <label>Email</label>
+        <input type="text" name="email" class="form-control" value=<%= oldInput ? oldInput.email : "" %>>
+    </div>
+    <div class="form-group">
+        <label>Senha</label>
+        <input type="password" name="password" class="form-control" value=<%= oldInput ? oldInput.password : "" %>>
+    </div>
+    <div class="form-group">
+        <label>Confirmação de senha</label>
+        <input type="password" name="confirmPassword" class="form-control"  value=<%= oldInput ? oldInput.confirmPassword : "" %>>
+    </div>
+    <div class="form-group">
+        <label>Nome do perfil</label>
+        <input type="text" name="name" class="form-control" value=<%= oldInput ? oldInput.nome : "" %>>
+    </div>
+        <button class="btn btn-dark" type="submit">Cadastrar</button>
+        <button class="btn btn-link" ><a href="/">Cancelar</a></button>
+</form>
