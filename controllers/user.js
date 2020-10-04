@@ -4,7 +4,11 @@ const bcrypt = require('bcryptjs')
 const { validationResult } = require('express-validator/check')
 
 exports.getCadastro = (req, res, next) => {
-  res.render('cadastro', { errorMessage: null, oldInput: null })
+  res.render('cadastro', {
+    path: '/cadastro',
+    errorMessage: null,
+    oldInput: null
+  })
 }
 exports.postCadastro = (req, res, next) => {
   const email = req.body.email
@@ -20,6 +24,7 @@ exports.postCadastro = (req, res, next) => {
   })
   if (!errors.isEmpty()) {
     return res.status(422).render('cadastro', {
+      path: '/cadastro',
       errorMessage: errors.array()[0].msg,
       oldInput: {
         email: email,
@@ -34,6 +39,7 @@ exports.postCadastro = (req, res, next) => {
     .then(docPerfil => {
       if (docPerfil) {
         return res.status(422).render('cadastro', {
+          path: '/cadastro',
           errorMessage: 'Nome já em uso',
           oldInput: {
             email: email,
@@ -46,6 +52,7 @@ exports.postCadastro = (req, res, next) => {
         return User.findOne({ email: email }).then(user => {
           if (user) {
             return res.status(422).render('cadastro', {
+              path: '/cadastro',
               errorMessage: 'Este email já está em uso!',
               oldInput: {
                 email: email,
@@ -98,6 +105,7 @@ exports.postCadastro = (req, res, next) => {
 exports.getLogin = (req, res, next) => {
   console.log(req.session.isLoggedIn)
   res.render('login', {
+    path: '/login',
     errorMessage: null,
     oldInput: null,
     isLoggedIn: req.session.isLoggedIn
@@ -108,10 +116,11 @@ exports.postLogin = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
   const errors = validationResult(req)
-  let perfil
+  let loggedUser
 
   if (!errors.isEmpty()) {
     return res.status(422).render('login', {
+      path: '/login',
       errorMessage: errors.array()[0].msg,
       oldInput: {
         email: email,
@@ -124,11 +133,12 @@ exports.postLogin = (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.render('login', {
+          path: '/login',
           errorMessage: 'Email ou senha inválida',
           oldInput: { email: email, password: password }
         })
       }
-      perfil = user.perfilPrincipal
+      loggedUser = user
       return user
     })
     .then(user => {
@@ -137,18 +147,27 @@ exports.postLogin = (req, res, next) => {
     .then(result => {
       if (result === false) {
         return res.render('login', {
+          path: '/login',
           errorMessage: 'Email ou senha inválida',
           oldInput: { email: email, password: password }
         })
       }
       req.session.isLoggedIn = true
+      req.session.user = loggedUser
+      req.session.perfil = loggedUser.perfilPrincipal
+      return req.session.save(err => {
+        res.redirect('/')
+        console.log(err)
+      })
     })
-    .then(result => {
-      return Perfil.findById({ _id: perfil })
-    })
-    .then(perfil => {
-      res.render('index', { isLoggedIn: req.session.isLoggedIn, perfil: perfil.nome })
-    }).catch(err => {
+    .catch(err => {
       console.log(err)
     })
+}
+
+exports.getLogout = (req, res, next) => {
+  return req.session.destroy(err => {
+    res.redirect('/')
+    console.log(err)
+  })
 }
