@@ -103,7 +103,6 @@ exports.postCadastro = (req, res, next) => {
 }
 
 exports.getLogin = (req, res, next) => {
-  console.log(req.session.isLoggedIn)
   res.render('login', {
     path: '/login',
     errorMessage: null,

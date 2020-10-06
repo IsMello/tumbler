@@ -3,9 +3,22 @@ body {
 }
 
 .nav-color {
-    background-color: rgb(75, 22, 126);
+    background-color: #4b167e;
 }
 
 .error {
     color: red;
 }
+
+.nav-item-text {
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+}
+
+.sub-nav-item {
+    padding-left:35px;
+    padding-right:35px;
+  }
