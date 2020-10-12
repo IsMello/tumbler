@@ -3,12 +3,22 @@ const Post = require('../models/post')
 const { validationResult } = require('express-validator/check')
 
 exports.getIndex = (req, res, next) => {
+  let user
   if (!req.session.perfil) {
-    return res.render('index', { path: '/', perfil: null })
+    return res.render('index', { path: '/', perfil: null, posts: null })
   }
   return Perfil.findById({ _id: req.session.perfil })
     .then(result => {
-      res.render('index', { path: '/', perfil: result.nome })
+      user = result.nome
+      return user
+    })
+    .then(result => {
+      return Post.find({})
+        .limit(10)
+        .sort({ createdAt: -1 }).populate('perfil')
+    })
+    .then(result => {
+      res.render('index', { path: '/', perfil: user, posts: result })
     })
     .catch(err => {
       console.log(err)
@@ -16,7 +26,7 @@ exports.getIndex = (req, res, next) => {
 }
 
 exports.getPost = (req, res, next) => {
-  res.render('post', { path: '/post', errorMessage: null })
+  res.render('post', { path: '/post', errorMessage: null, oldInput: null })
 }
 
 exports.postPost = (req, res, next) => {
@@ -33,7 +43,8 @@ exports.postPost = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).render('post', {
       path: '/post',
-      errorMessage: errors.array()[0].msg
+      errorMessage: errors.array()[0].msg,
+      oldInput: { titulo: titulo, conteudo: conteudo }
     })
   }
 
