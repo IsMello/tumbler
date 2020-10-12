@@ -53,12 +53,12 @@ Tumbler
     <br>
     <br>
     <div class="container">
-        <% for( var i =0; i< posts.length; i++) { %>
+        <% for(post of posts) { %>
         <div class="card mx-auto" style="width: 35.3rem;">
             <div class="card-body">
-              <h6 class="card-subtitle mb-2 text-muted"><%= posts[i].perfil.nome %></h6>
-              <h5 class="card-title"><%= posts[i].titulo %></h5> 
-              <p class="card-text"><%= posts[i].conteudo %></p>
+              <h6 class="card-subtitle mb-2 text-muted"><%= post.perfil.nome %></h6>
+              <h5 class="card-title"><%= post.titulo %></h5> 
+              <p class="card-text"><%= post.conteudo %></p>
             </div>
           </div>
           <br>
