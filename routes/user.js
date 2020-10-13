@@ -43,4 +43,6 @@ router.post(
   userController.postLogin
 )
 
+router.get('/logout', userController.getLogout)
+
 module.exports = router

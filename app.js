@@ -8,6 +8,7 @@ const session = require('express-session')
 const MongoDBStore = require('connect-mongodb-session')(session)
 const flash = require('connect-flash')
 const expressLayout = require('express-ejs-layouts')
+const User = require('./models/user')
 
 app.set('view engine', 'ejs')
 
@@ -26,6 +27,29 @@ app.use(
     store: store
   })
 )
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn
+  next()
+})
+
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next()
+  }
+  User.findById(req.session.user._id)
+    .then(user => {
+      if (!user) {
+        return next()
+      }
+      req.user = user
+      next()
+    })
+    .catch(err => {
+      next(new Error(err))
+    })
+})
+
 app.use(flash())
 
 app.use(expressLayout)
