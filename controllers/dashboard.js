@@ -1,24 +1,41 @@
 const Perfil = require('../models/perfil')
 const Post = require('../models/post')
+const User = require('../models/user')
 const { validationResult } = require('express-validator/check')
+let perfilAtual
+let dashPosts
 
 exports.getIndex = (req, res, next) => {
-  let user
+  // let perfilAtual
   if (!req.session.perfil) {
-    return res.render('index', { path: '/', perfil: null, posts: null })
+    return res.render('index', {
+      path: '/',
+      perfil: null,
+      posts: null,
+      user: null,
+      errorMessage: null
+    })
   }
   return Perfil.findById({ _id: req.session.perfil })
-    .then(result => {
-      user = result.nome
-      return user
+    .then(perfil => {
+      perfilAtual = perfil.nome
+      return perfilAtual
     })
     .then(result => {
       return Post.find({})
         .limit(10)
-        .sort({ createdAt: -1 }).populate('perfil')
+        .sort({ createdAt: -1 })
+        .populate('perfil')
     })
-    .then(result => {
-      res.render('index', { path: '/', perfil: user, posts: result })
+    .then(posts => {
+      dashPosts = posts
+      res.render('index', {
+        path: '/',
+        perfil: perfilAtual,
+        posts: dashPosts,
+        user: req.user,
+        errorMessage: null
+      })
     })
     .catch(err => {
       console.log(err)
@@ -56,4 +73,31 @@ exports.postPost = (req, res, next) => {
     .catch(err => {
       console.log(err)
     })
+}
+
+exports.postFollow = (req, res, next) => {
+  if (req.user.perfilPrincipal.toString() === req.body.perfilId.toString()) {
+    return res.render('index', {
+      path: '/',
+      perfil: perfilAtual,
+      posts: dashPosts,
+      user: req.user,
+      errorMessage: 'Você não pode seguir o próprio perfil!'
+    })
+  }
+  return User.findOneAndUpdate(
+    { _id: req.session.user._id },
+    { $addToSet: { perfisSeguidos: req.body.perfilId } }
+  ).then(result => {
+    res.redirect('/')
+  })
+}
+
+exports.postUnfollow = (req, res, next) => {
+  return User.findOneAndUpdate(
+    { _id: req.session.user._id },
+    { $pull: { perfisSeguidos: req.body.perfilId } }
+  ).then(result => {
+    res.redirect('/')
+  })
 }

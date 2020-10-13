@@ -15,6 +15,10 @@ const userSchema = new Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'Perfil',
     required: true
+  },
+  perfisSeguidos: {
+    type: [mongoose.SchemaTypes.ObjectId],
+    ref: 'Perfil'
   }
 })
 

@@ -15,4 +15,8 @@ router.post(
   dashboardController.postPost
 )
 
+router.post('/follow', dashboardController.postFollow)
+
+router.post('/unfollow', dashboardController.postUnfollow)
+
 module.exports = router

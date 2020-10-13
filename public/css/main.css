@@ -8,6 +8,7 @@ body {
 
 .error {
     color: red;
+    text-align: center;
 }
 
 .nav-item-text {

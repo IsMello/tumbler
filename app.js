@@ -16,6 +16,7 @@ const store = new MongoDBStore({
   uri: process.env.MONGODB_URL,
   collection: 'sessions'
 })
+mongoose.set('useFindAndModify', false)
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
