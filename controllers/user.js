@@ -155,7 +155,7 @@ exports.postLogin = (req, res, next) => {
       req.session.user = loggedUser
       req.session.perfil = loggedUser.perfilPrincipal
       return req.session.save(err => {
-        res.redirect('/')
+        res.redirect('/dashboard')
         console.log(err)
       })
     })

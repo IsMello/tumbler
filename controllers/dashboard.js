@@ -6,16 +6,23 @@ let perfilAtual
 let dashPosts
 
 exports.getIndex = (req, res, next) => {
-  // let perfilAtual
-  if (!req.session.perfil) {
-    return res.render('index', {
-      path: '/',
-      perfil: null,
-      posts: null,
-      user: null,
-      errorMessage: null
+  return Post.find({})
+    .limit(10)
+    .sort({ createdAt: -1 })
+    .populate('perfil')
+    .then(posts => {
+      dashPosts = posts
+      return res.render('index', {
+        path: '/',
+        posts: dashPosts
+      })
     })
-  }
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+exports.getDashboard = (req, res, next) => {
   return Perfil.findById({ _id: req.session.perfil })
     .then(perfil => {
       perfilAtual = perfil.nome
@@ -28,13 +35,25 @@ exports.getIndex = (req, res, next) => {
         .populate('perfil')
     })
     .then(posts => {
+      // var teste = posts.map(function (post) {
+      //   if (req.user.perfisSeguidos.includes(post.perfil._id) === true) {
+      //     return (post.follow = 'unfollow')
+      //   } else if (
+      //     req.user.perfilPrincipal.toString() === post.perfil._id.toString()
+      //   ) {
+      //     return (post.follow = 'self')
+      //   } else {
+      //     return (post.follow = 'follow')
+      //   }
+      // })
       dashPosts = posts
-      res.render('index', {
-        path: '/',
+      res.render('dashboard', {
+        path: '/dashboard',
         perfil: perfilAtual,
         posts: dashPosts,
         user: req.user,
         errorMessage: null
+        // teste: teste
       })
     })
     .catch(err => {
@@ -68,7 +87,7 @@ exports.postPost = (req, res, next) => {
   return post
     .save()
     .then(result => {
-      return res.redirect('/')
+      return res.redirect('/dashboard')
     })
     .catch(err => {
       console.log(err)
@@ -77,8 +96,8 @@ exports.postPost = (req, res, next) => {
 
 exports.postFollow = (req, res, next) => {
   if (req.user.perfilPrincipal.toString() === req.body.perfilId.toString()) {
-    return res.render('index', {
-      path: '/',
+    return res.render('dashboard', {
+      path: '/dashboard',
       perfil: perfilAtual,
       posts: dashPosts,
       user: req.user,
@@ -89,7 +108,7 @@ exports.postFollow = (req, res, next) => {
     { _id: req.session.user._id },
     { $addToSet: { perfisSeguidos: req.body.perfilId } }
   ).then(result => {
-    res.redirect('/')
+    res.redirect('/dashboard')
   })
 }
 
@@ -98,6 +117,33 @@ exports.postUnfollow = (req, res, next) => {
     { _id: req.session.user._id },
     { $pull: { perfisSeguidos: req.body.perfilId } }
   ).then(result => {
-    res.redirect('/')
+    res.redirect('/dashboard')
   })
+}
+
+exports.getSugeridos = (req, res, next) => {
+  return Perfil.findById({ _id: req.session.perfil })
+    .then(perfil => {
+      perfilAtual = perfil.nome
+      return perfilAtual
+    })
+    .then(result => {
+      return Post.find({})
+        .limit(10)
+        .sort({ createdAt: -1 })
+        .populate('perfil')
+    })
+    .then(posts => {
+      dashPosts = posts
+      res.render('sugeridos', {
+        path: '/sugeridos',
+        perfil: perfilAtual,
+        posts: dashPosts,
+        user: req.user,
+        errorMessage: null
+      })
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }

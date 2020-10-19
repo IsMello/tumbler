@@ -14,7 +14,7 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-sm navbar-dark nav-color fixed-top">
 
-        <a class="navbar-brand" href="/"><i class="fa fa-star" aria-hidden="true"></i></a>
+    <a class="navbar-brand" href=<%= isAuthenticated ? "/dashboard" : "/"  %>><i class="fa fa-star" aria-hidden="true"></i></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -22,9 +22,14 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class=<%= path === '/' ? "active" : "nav-item"%>>
-                    <a class="nav-link" href="/">Home</a>
+                <li class=<%= path === '/dashboard' || path === '/' ? "active" : "nav-item"%>>
+                    <a class="nav-link" href=<%= isAuthenticated ? "/dashboard" : "/"  %>>Home</a>
                 </li>
+                <%if (isAuthenticated) { %>
+                    <li class=<%= path === '/sugeridos' ? "active" : "nav-item"%>>
+                        <a class="nav-link" href="/sugeridos"  %>>Sugeridos</a>
+                    </li>
+                <% } %>
             </ul>
             <ul class="navbar-nav">
                 <%if (!isAuthenticated) { %>

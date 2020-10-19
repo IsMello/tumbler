@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/user')
 const { check } = require('express-validator/check')
+const auth = require('../middleware/isAuth')
 
-router.get('/cadastro', userController.getCadastro)
+router.get('/cadastro', auth.isAuth, userController.getCadastro)
 
 router.post(
   '/cadastro',
@@ -30,7 +31,7 @@ router.post(
   userController.postCadastro
 )
 
-router.get('/login', userController.getLogin)
+router.get('/login', auth.isAuth, userController.getLogin)
 
 router.post(
   '/login',
@@ -43,6 +44,6 @@ router.post(
   userController.postLogin
 )
 
-router.get('/logout', userController.getLogout)
+router.get('/logout', auth.notAuth, userController.getLogout)
 
 module.exports = router
