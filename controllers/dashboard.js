@@ -35,25 +35,25 @@ exports.getDashboard = (req, res, next) => {
         .populate('perfil')
     })
     .then(posts => {
-      // var teste = posts.map(function (post) {
-      //   if (req.user.perfisSeguidos.includes(post.perfil._id) === true) {
-      //     return (post.follow = 'unfollow')
-      //   } else if (
-      //     req.user.perfilPrincipal.toString() === post.perfil._id.toString()
-      //   ) {
-      //     return (post.follow = 'self')
-      //   } else {
-      //     return (post.follow = 'follow')
-      //   }
-      // })
-      dashPosts = posts
+      const dashPosts = posts.map(function (post) {
+        const novoPost = { ...post._doc }
+        const user = req.user
+        const perfilId = post.perfil._id
+        if (user.perfisSeguidos.includes(perfilId)) {
+          novoPost.follow = 'unfollow'
+        } else if (user.perfilPrincipal.toString() === perfilId.toString()) {
+          novoPost.follow = 'self'
+        } else {
+          novoPost.follow = 'follow'
+        }
+        return novoPost
+      })
       res.render('dashboard', {
         path: '/dashboard',
         perfil: perfilAtual,
         posts: dashPosts,
         user: req.user,
         errorMessage: null
-        // teste: teste
       })
     })
     .catch(err => {

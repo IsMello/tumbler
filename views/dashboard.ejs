@@ -58,14 +58,14 @@ Tumbler
     <%}%>
     <div class="container">
         <% for(post of posts) { %>
-            <% if (user.perfisSeguidos.includes(post.perfil._id) === true || user.perfilPrincipal.toString() === post.perfil._id.toString()){%>
+            <% if (post.follow === 'unfollow' || post.follow === 'self'){%>
                 <div class="card mx-auto" style="width: 35.3rem;">
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
                             <a class="nav-link disabled"><%= post.perfil.nome %></a>
                         </li>
-                        <% if (post.perfil._id.toString() !== user.perfilPrincipal.toString()) { %>
+                        <% if (post.follow === 'unfollow') { %>
                         <li class="nav-item">
                             <form method="POST" action="unfollow"> 
                                 <input type="hidden" name="perfilId" value=<%= post.perfil._id %>>
