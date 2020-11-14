@@ -14,11 +14,18 @@ Tumbler
                   </li>
                 </ul>
               </div>
-            <div class="card-body">
-              <h5 class="card-title"><%= post.titulo %></h5> 
-              <p class="card-text"><%= post.conteudo %></p>
+              <% if(post.tipo === 'image') { %>
+                <img src="/<%= post.path %>" class="img-fluid">
+                <p class="card-text legenda"><%= post.legenda %></p>
+             <% } else  { %>
+                <div class="card-body">
+                <h5 class="card-title"><%= post.titulo %></h5> 
+                <p class="card-text"><%= post.conteudo %></p>
+                </div>
+             <% } %>
             </div>
           </div>
           <br>
         <% } %>
+          <%- include('includes/pagination.ejs', {currentPage: currentPage, hasNextPage: hasNextPage, nextPage: nextPage, hasPreviousPage: hasPreviousPage, lastPage: lastPage}) %>
       </div>

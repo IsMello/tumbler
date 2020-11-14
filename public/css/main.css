@@ -21,3 +21,10 @@ h1 {
 .btn-group-align {
       text-align: center;
 }
+  
+  .pagination a:hover,
+  .pagination a:active,
+  .pagination a.active {
+    background: #4b167e;
+    color: white
+  }

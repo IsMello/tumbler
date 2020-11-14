@@ -4,17 +4,34 @@ const User = require('../models/user')
 const { validationResult } = require('express-validator/check')
 let perfilAtual
 let dashPosts
+const ITEMS_PER_PAGE = 4
 
 exports.getIndex = (req, res, next) => {
-  return Post.find({})
-    .limit(10)
-    .sort({ createdAt: -1 })
-    .populate('perfil')
+  const page = +req.query.page || 1
+  let totalPosts
+
+  Post.find()
+    .countDocuments()
+    .then(numPosts => {
+      totalPosts = numPosts
+      return Post.find({})
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
+        .sort({ createdAt: -1 })
+        .populate('perfil')
+    })
     .then(posts => {
       dashPosts = posts
       return res.render('index', {
         path: '/',
-        posts: dashPosts
+        posts: dashPosts,
+        totalPosts: totalPosts,
+        hasNextPage: ITEMS_PER_PAGE * page < totalPosts,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalPosts / ITEMS_PER_PAGE),
+        currentPage: page
       })
     })
     .catch(err => {
@@ -23,14 +40,21 @@ exports.getIndex = (req, res, next) => {
 }
 
 exports.getDashboard = (req, res, next) => {
+  const page = +req.query.page || 1
+  let totalPosts
   return Perfil.findById({ _id: req.session.perfil })
     .then(perfil => {
       perfilAtual = perfil.nome
       return perfilAtual
     })
     .then(result => {
+      return Post.find().countDocuments()
+    })
+    .then(numPosts => {
+      totalPosts = numPosts
       return Post.find({})
-        .limit(10)
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
         .sort({ createdAt: -1 })
         .populate('perfil')
     })
@@ -53,7 +77,14 @@ exports.getDashboard = (req, res, next) => {
         perfil: perfilAtual,
         posts: dashPosts,
         user: req.user,
-        errorMessage: null
+        errorMessage: null,
+        totalPosts: totalPosts,
+        hasNextPage: ITEMS_PER_PAGE * page < totalPosts,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalPosts / ITEMS_PER_PAGE),
+        currentPage: page
       })
     })
     .catch(err => {
@@ -73,7 +104,8 @@ exports.postPost = (req, res, next) => {
   const post = new Post({
     perfil: perfil,
     titulo: titulo,
-    conteudo: conteudo
+    conteudo: conteudo,
+    tipo: 'text'
   })
 
   if (!errors.isEmpty()) {
@@ -122,14 +154,21 @@ exports.postUnfollow = (req, res, next) => {
 }
 
 exports.getSugeridos = (req, res, next) => {
+  const page = +req.query.page || 1
+  let totalPosts
   return Perfil.findById({ _id: req.session.perfil })
     .then(perfil => {
       perfilAtual = perfil.nome
       return perfilAtual
     })
     .then(result => {
+      return Post.find().countDocuments()
+    })
+    .then(numPosts => {
+      totalPosts = numPosts
       return Post.find({})
-        .limit(10)
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
         .sort({ createdAt: -1 })
         .populate('perfil')
     })
@@ -140,10 +179,59 @@ exports.getSugeridos = (req, res, next) => {
         perfil: perfilAtual,
         posts: dashPosts,
         user: req.user,
-        errorMessage: null
+        errorMessage: null,
+        totalPosts: totalPosts,
+        hasNextPage: ITEMS_PER_PAGE * page < totalPosts,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalPosts / ITEMS_PER_PAGE),
+        currentPage: page
       })
     })
     .catch(err => {
       console.log(err)
     })
 }
+
+exports.getImagePost = (req, res, next) => {
+  return res.render('photo', { path: 'image', errorMessage: null })
+}
+
+exports.postImagePost = (req, res, next) => {
+  const image = req.file
+  const legenda = req.body.legenda
+  const perfil = req.session.perfil
+
+  if (!image) {
+    return res.status(422).render('photo', {
+      path: 'image',
+      errorMessage: 'O arquivo anexado não é uma imagem!'
+    })
+  }
+  const post = new Post({
+    perfil: perfil,
+    tipo: 'image',
+    path: image.path,
+    legenda: legenda
+  })
+  return post
+    .save()
+    .then(result => {
+      res.redirect('/dashboard')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+// exports.getEditImagePost = (req, res, next) => {
+//  const image = req.file
+//  if(image)  {
+//   const imageMedia = new Media({
+//     fileName: image.filename,
+//     path: image.path
+//   })
+// }
+//   return res.render('photo', { path: 'image', errorMessage: null })
+// }

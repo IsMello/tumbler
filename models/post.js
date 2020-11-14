@@ -8,11 +8,19 @@ const postSchema = new Schema(
       ref: 'Perfil',
       required: true
     },
+    tipo: {
+      type: String
+    },
     titulo: {
-      type: String,
-      required: true
+      type: String
     },
     conteudo: {
+      type: String
+    },
+    path: {
+      type: String
+    },
+    legenda: {
       type: String
     }
   },

@@ -8,7 +8,7 @@ router.get('/', auth.isAuth, dashboardController.getIndex)
 
 router.get('/dashboard', auth.notAuth, dashboardController.getDashboard)
 
-router.get('/post', dashboardController.getPost)
+router.get('/post', auth.notAuth, dashboardController.getPost)
 
 router.post(
   '/post',
@@ -23,5 +23,9 @@ router.post('/follow', dashboardController.postFollow)
 router.post('/unfollow', dashboardController.postUnfollow)
 
 router.get('/sugeridos', auth.notAuth, dashboardController.getSugeridos)
+
+router.get('/image', auth.notAuth, dashboardController.getImagePost)
+
+router.post('/image', auth.notAuth, dashboardController.postImagePost)
 
 module.exports = router
